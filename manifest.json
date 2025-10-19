@@ -1,7 +1,7 @@
 {
-  "name": "LINE風チャット",
-  "short_name": "チャット",
-  "description": "LINE風のチャットアプリケーション",
+  "name": "LINE風",
+  "short_name": "LINE風",
+  "description": "LINE風",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

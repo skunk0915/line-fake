@@ -2,9 +2,9 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#06c755">
-    <title>LINE風チャット</title>
+    <title>LINE風</title>
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/png" sizes="16x16" href="images/favicon/favicon-16.png">
     <link rel="icon" type="image/png" sizes="32x32" href="images/favicon/favicon-32.png">
@@ -17,7 +17,7 @@
     <div id="loginPage" class="page active">
         <div class="login-container">
             <div class="logo">
-                <h1>LINE風チャット</h1>
+                <h1>LINE風</h1>
             </div>
             <form id="loginForm">
                 <input type="email" id="loginEmail" placeholder="メールアドレス" required>
@@ -64,7 +64,13 @@
         <div class="messages-container" id="messagesContainer">
             <!-- メッセージがここに表示されます -->
         </div>
+        <div class="image-preview-container" id="imagePreviewContainer" style="display: none;">
+            <img id="imagePreview" src="" alt="プレビュー">
+            <button id="cancelImageBtn" class="btn-cancel-image">×</button>
+        </div>
         <div class="message-input-container">
+            <input type="file" id="imageInput" accept="image/*" style="display: none;">
+            <button id="imageBtn" class="btn-image">📷</button>
             <input type="text" id="messageInput" placeholder="メッセージを入力">
             <button id="sendBtn" class="btn-send">送信</button>
         </div>
