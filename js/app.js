@@ -2,9 +2,13 @@
 let currentUser = null;
 let currentChatUser = null;
 let messagePollingInterval = null;
+let swRegistration = null;
 
 // API エンドポイント
 const API_BASE = 'api';
+
+// VAPID公開鍵（サーバーから取得した値）
+const VAPID_PUBLIC_KEY = 'BG4f8hDmmbHJux21u__aOes68TJRy7VG6cw-zItJ49Y_R6WqwHjfApHlIXeZa77e7LH-Ph05r81WVnhWdw9LAhk';
 
 // ページ切り替え
 function showPage(pageId) {
@@ -133,6 +137,11 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
             console.log('ユーザー情報保存完了:', currentUser);
             await loadChatList();
             showPage('chatListPage');
+
+            // ログイン後にプッシュ通知の許可を求める
+            setTimeout(() => {
+                requestNotificationPermission();
+            }, 500);
         }
     } catch (error) {
         console.error('ログインエラー:', error);
@@ -321,6 +330,109 @@ async function sendMessage() {
     }
 }
 
+// Base64 URL-safe文字列をUint8Arrayに変換
+function urlBase64ToUint8Array(base64String) {
+    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const base64 = (base64String + padding)
+        .replace(/\-/g, '+')
+        .replace(/_/g, '/');
+
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+
+    for (let i = 0; i < rawData.length; ++i) {
+        outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
+}
+
+// プッシュ通知の購読
+async function subscribeToPushNotifications() {
+    if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+        console.log('このブラウザはプッシュ通知をサポートしていません');
+        return false;
+    }
+
+    try {
+        // Service Workerの準備を待つ
+        const registration = await navigator.serviceWorker.ready;
+        swRegistration = registration;
+
+        // 既存の購読を確認
+        let subscription = await registration.pushManager.getSubscription();
+
+        if (!subscription) {
+            // 新規購読
+            console.log('プッシュ通知の購読を開始します');
+
+            const applicationServerKey = urlBase64ToUint8Array(VAPID_PUBLIC_KEY);
+            subscription = await registration.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: applicationServerKey
+            });
+
+            console.log('プッシュ通知の購読に成功しました');
+        } else {
+            console.log('既にプッシュ通知を購読しています');
+        }
+
+        // サブスクリプション情報をサーバーに送信
+        await sendSubscriptionToServer(subscription);
+        return true;
+
+    } catch (error) {
+        console.error('プッシュ通知の購読に失敗しました:', error);
+        return false;
+    }
+}
+
+// サブスクリプション情報をサーバーに送信
+async function sendSubscriptionToServer(subscription) {
+    try {
+        const result = await apiCall('save_subscription.php', 'POST', {
+            subscription: JSON.stringify(subscription)
+        });
+
+        if (result.success) {
+            console.log('サブスクリプション情報をサーバーに保存しました');
+        } else {
+            console.error('サブスクリプション情報の保存に失敗しました');
+        }
+    } catch (error) {
+        console.error('サブスクリプション送信エラー:', error);
+    }
+}
+
+// プッシュ通知の許可をリクエスト
+async function requestNotificationPermission() {
+    if (!('Notification' in window)) {
+        console.log('このブラウザは通知をサポートしていません');
+        return false;
+    }
+
+    if (Notification.permission === 'granted') {
+        // 既に許可されている
+        await subscribeToPushNotifications();
+        return true;
+    }
+
+    if (Notification.permission !== 'denied') {
+        // 許可をリクエスト
+        const permission = await Notification.requestPermission();
+
+        if (permission === 'granted') {
+            console.log('通知が許可されました');
+            await subscribeToPushNotifications();
+            return true;
+        } else {
+            console.log('通知が拒否されました');
+            return false;
+        }
+    }
+
+    return false;
+}
+
 // 初期化
 async function init() {
     if (loadUser()) {
@@ -328,6 +440,12 @@ async function init() {
         try {
             await loadChatList();
             showPage('chatListPage');
+
+            // ログイン後にプッシュ通知の許可を求める
+            // ユーザーアクションの後に実行するため、少し遅延させる
+            setTimeout(() => {
+                requestNotificationPermission();
+            }, 1000);
         } catch (error) {
             // トークンが無効な場合は既にログインページに遷移している
             console.log('初期化時のトークン検証失敗、ログイン画面に遷移します');

@@ -10,6 +10,11 @@ define('DB_PASS', '8rjcp4ck');
 // セキュリティ設定
 define('JWT_SECRET', 'your-secret-key-change-this-in-production');
 
+// VAPID Keys for Web Push
+define('VAPID_PUBLIC_KEY', 'BG4f8hDmmbHJux21u__aOes68TJRy7VG6cw-zItJ49Y_R6WqwHjfApHlIXeZa77e7LH-Ph05r81WVnhWdw9LAhk');
+define('VAPID_PRIVATE_KEY', '-jM2O4ua6V6yNHw14nHVfgkBHDfQvz6IWrUK2YevMEk');
+define('VAPID_SUBJECT', 'mailto:admin@example.com');
+
 // タイムゾーン設定
 date_default_timezone_set('Asia/Tokyo');
 
@@ -42,7 +47,7 @@ header('Access-Control-Allow-Headers: Content-Type, Authorization');
 header('Content-Type: application/json; charset=utf-8');
 
 // OPTIONSリクエストへの対応
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit;
 }
