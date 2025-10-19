@@ -1,0 +1,17 @@
+{
+  "name": "LINE風チャット",
+  "short_name": "チャット",
+  "description": "LINE風のチャットアプリケーション",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#06c755",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "images/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

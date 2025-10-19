@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#06c755">
+    <title>LINE風チャット</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="apple-touch-icon" href="images/icon-192.png">
+</head>
+<body>
+    <!-- ログイン画面 -->
+    <div id="loginPage" class="page active">
+        <div class="login-container">
+            <div class="logo">
+                <h1>LINE風チャット</h1>
+            </div>
+            <form id="loginForm">
+                <input type="email" id="loginEmail" placeholder="メールアドレス" required>
+                <input type="password" id="loginPassword" placeholder="パスワード" required>
+                <button type="submit" class="btn-primary">ログイン</button>
+                <p class="switch-link">アカウントをお持ちでない方は <a href="#" id="showRegister">新規登録</a></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- 新規登録画面 -->
+    <div id="registerPage" class="page">
+        <div class="login-container">
+            <div class="logo">
+                <h1>新規登録</h1>
+            </div>
+            <form id="registerForm">
+                <input type="text" id="registerName" placeholder="ニックネーム" required>
+                <input type="email" id="registerEmail" placeholder="メールアドレス" required>
+                <input type="password" id="registerPassword" placeholder="パスワード（6文字以上）" required minlength="6">
+                <button type="submit" class="btn-primary">登録</button>
+                <p class="switch-link">すでにアカウントをお持ちの方は <a href="#" id="showLogin">ログイン</a></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- チャットリスト画面 -->
+    <div id="chatListPage" class="page">
+        <header class="app-header">
+            <h1>トーク</h1>
+            <button id="logoutBtn" class="btn-icon">ログアウト</button>
+        </header>
+        <div class="user-list" id="userList">
+            <!-- ユーザーリストがここに表示されます -->
+        </div>
+    </div>
+
+    <!-- チャット画面 -->
+    <div id="chatPage" class="page">
+        <header class="app-header">
+            <button id="backBtn" class="btn-icon">←</button>
+            <h1 id="chatUserName">ユーザー名</h1>
+        </header>
+        <div class="messages-container" id="messagesContainer">
+            <!-- メッセージがここに表示されます -->
+        </div>
+        <div class="message-input-container">
+            <input type="text" id="messageInput" placeholder="メッセージを入力">
+            <button id="sendBtn" class="btn-send">送信</button>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script>
+        // Service Worker の登録
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('service-worker.js')
+                    .then(reg => console.log('Service Worker registered'))
+                    .catch(err => console.log('Service Worker registration failed', err));
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{
+  "name": "line-fake",
+  "version": "1.0.0",
+  "description": "LINE風のPWAチャットアプリケーション",
+  "main": "index.html",
+  "scripts": {
+    "dev": "php -S localhost:8000"
+  },
+  "keywords": ["pwa", "chat", "line"],
+  "author": "",
+  "license": "MIT"
+}

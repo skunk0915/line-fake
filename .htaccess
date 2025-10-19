@@ -1,0 +1,16 @@
+# Authorizationヘッダーを有効化
+RewriteEngine On
+RewriteCond %{HTTP:Authorization} ^(.*)
+RewriteRule .* - [e=HTTP_AUTHORIZATION:%1]
+
+# HTTPS リダイレクト（本番環境で有効化）
+# RewriteCond %{HTTPS} off
+# RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# PHPのエラー表示設定（開発環境）
+php_flag display_errors On
+php_value error_reporting E_ALL
+
+# 本番環境ではコメントアウトを外してください
+# php_flag display_errors Off
+# php_value error_reporting 0
