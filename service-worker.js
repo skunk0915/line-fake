@@ -1,11 +1,12 @@
-const CACHE_NAME = 'line-chat-v1';
+const CACHE_NAME = 'line-chat-v2';
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/css/style.css',
-  '/js/app.js',
-  '/images/icon-192.png',
-  '/images/icon-512.png'
+  './',
+  './index.html',
+  './css/style.css',
+  './js/app.js',
+  './images/favicon/icon-192.png',
+  './images/favicon/icon-512.png',
+  './images/favicon/apple-touch-icon.png'
 ];
 
 // インストール時のキャッシュ

@@ -230,3 +230,43 @@
 2. PWAアイコン（192x192、512x512）を生成する必要があります
 3. 本番環境ではHTTPSが必須です
 4. さくらレンタルサーバーでMySQLデータベースを作成し、schema.sqlを実行してください
+
+## 2025-10-19: iOSホーム画面追加時のNot Foundエラー修正
+
+### 問題
+- iOSでホーム画面に追加したWebアプリが「Not Found」エラーになる
+
+### 原因
+1. manifest.jsonの`start_url`が絶対パス(`/index.html`)で設定されていた
+2. Service Workerのキャッシュパスも絶対パスで設定されていた
+3. アイコン画像のパスが実際の配置場所と異なっていた
+
+### 修正内容
+
+#### 1. manifest.json
+- `start_url`: `/index.html` → `./` (相対パスに変更)
+- `scope`: `./` を追加
+- `icons`: `images/favicon/` 配下のファイルに変更
+  - icon-192.png
+  - icon-512.png
+  - apple-touch-icon.png (iOS用、maskable対応)
+
+#### 2. index.html
+- favicon参照を追加（16px, 32px, 48px）
+- apple-touch-iconを`images/favicon/apple-touch-icon.png`に変更
+
+#### 3. service-worker.js
+- キャッシュ名を `line-chat-v1` → `line-chat-v2` に更新
+- キャッシュパスを全て相対パス(`./`)に変更
+- アイコンパスを`images/favicon/`に変更
+
+### 編集ファイル
+- /Users/mizy/Dropbox/line-fake/manifest.json
+- /Users/mizy/Dropbox/line-fake/index.html
+- /Users/mizy/Dropbox/line-fake/service-worker.js
+
+### 次のステップ
+1. Safariのキャッシュをクリア
+2. ホーム画面のアイコンを削除して再追加
+3. 動作確認
+
